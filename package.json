@@ -19,7 +19,7 @@
     "vite-plugin-html-inject": "^1.0.1"
   },
   "description": "goit-js-hw-11",
-  "main": "./src/main.js",
+  "main": "main.js",
   "repository": {
     "type": "git",
     "url": "goit-js-hw-11"

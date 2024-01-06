@@ -15,11 +15,29 @@
   </head>
   <body>
     <section>
-      <h1>Lorem ipsum dolor sit amet.</h1>
+      <h1>Fetching and rendering Gallery</h1>
+
+      <form class="search-form" action="submit" method="get">
+        <input class="form-input" type="text" name="search" id="search" />
+        <button class="btn-submit" type="submit">Search</button>
+      </form>
       <span class="loader"></span>
-      <!-- Path to images as from index.html file -->
+      <ul class="gallery"></ul>
     </section>
 
     <script type="module" src="./main.js"></script>
   </body>
 </html>
+
+<!-- //   function renderUsers(users) {
+//     const markup = users
+//       .map(user => {
+//         return `<li>
+//           <p><b>Name</b>: ${user.name}</p>
+//           <p><b>Email</b>: ${user.email}</p>
+//           <p><b>Company</b>: ${user.company.name}</p>
+//         </li>`;
+//       })
+//       .join('');
+//     userList.insertAdjacentHTML('beforeend', markup);
+//   } -->

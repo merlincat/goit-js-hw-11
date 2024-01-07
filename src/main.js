@@ -4,12 +4,21 @@ import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const submitFormBtn = document.querySelector('.btn-submit');
 const form = document.querySelector('.search-form');
-const searchInput = form.querySelector('.form-input');
 
 const galleryContainer = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
+
+const lightbox = new SimpleLightbox('.gallery-link', {
+  nav: true,
+  captionDelay: 250,
+  captionsData: 'alt',
+  close: true,
+  enableKeyboard: true,
+  docClose: true,
+  scrollZoom: false,
+  fadeSpeed: 400,
+});
 
 function showLoader() {
   loader.style.display = 'block';
@@ -40,7 +49,8 @@ let isSubmitHandled = false;
 form.addEventListener('submit', event => {
   event.preventDefault();
   showLoader();
-  searchParams.set('q', searchInput.value);
+  let searchQuery = event.target.elements.search.value.trim();
+  searchParams.set('q', searchQuery);
   fetchUrl = `https://pixabay.com/api/?${searchParams.toString()}`;
   fetchImages()
     .then(images => {
@@ -53,10 +63,11 @@ form.addEventListener('submit', event => {
             'Sorry, there are no images matching your search query. Please try again!',
           position: 'topCenter',
         });
+        galleryContainer.innerHTML = '';
       }
     })
     .catch(error => {
-      throw new Error('Error fetching images: ' + error);
+      console.log('Error fetching images: ' + error);
     })
     .finally(() => {
       hideLoader();
@@ -86,7 +97,7 @@ function renderGallery(images) {
       <div class="image-descr">Comments
   <span class="image-descr-value">${image.comments}</span>
   </div>
-        <div class="image-descr">Comments
+        <div class="image-descr">Downloads
   <span class="image-descr-value">${image.downloads}</span>
   </div>
   </div>
@@ -94,15 +105,6 @@ function renderGallery(images) {
     ''
   );
   galleryContainer.innerHTML = mockupGallery;
-  const lightbox = new SimpleLightbox('.gallery-link', {
-    nav: true,
-    captionDelay: 250,
-    captionsData: 'alt',
-    close: true,
-    enableKeyboard: true,
-    docClose: true,
-    scrollZoom: false,
-    fadeSpeed: 400,
-  });
+  lightbox.open(images);
   lightbox.refresh();
 }

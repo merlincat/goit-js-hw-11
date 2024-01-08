@@ -8,6 +8,8 @@ const form = document.querySelector('.search-form');
 
 const galleryContainer = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
+let baseUrl = 'https://pixabay.com/api/';
+let searchQuery = null;
 
 const lightbox = new SimpleLightbox('.gallery-link', {
   nav: true,
@@ -29,29 +31,26 @@ function hideLoader() {
   loader.style.visibility = 'hidden';
 }
 
-const searchParams = new URLSearchParams({
-  key: '41675513-91cb25c2d4155284de80d9ebe',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: 'true',
-});
-let fetchUrl = `https://pixabay.com/api/?${searchParams.toString()}`;
-
 function fetchImages() {
-  return fetch(fetchUrl).then(response => {
+  const searchParams = new URLSearchParams({
+    key: '41675513-91cb25c2d4155284de80d9ebe',
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: 'true',
+    q: searchQuery,
+  });
+  return fetch(`${baseUrl}?${searchParams.toString()}`).then(response => {
     if (!response.ok) {
       throw new Error(response.status);
     }
     return response.json();
   });
 }
-let isSubmitHandled = false;
 form.addEventListener('submit', event => {
   event.preventDefault();
+  galleryContainer.innerHTML = '';
   showLoader();
-  let searchQuery = event.target.elements.search.value.trim();
-  searchParams.set('q', searchQuery);
-  fetchUrl = `https://pixabay.com/api/?${searchParams.toString()}`;
+  searchQuery = event.target.elements.search.value.trim();
   fetchImages()
     .then(images => {
       if (images.hits && images.hits.length > 0) {
@@ -72,7 +71,7 @@ form.addEventListener('submit', event => {
     .finally(() => {
       hideLoader();
     });
-  form.reset();
+  event.currentTarget.reset();
 });
 
 function renderGallery(images) {
@@ -105,6 +104,5 @@ function renderGallery(images) {
     ''
   );
   galleryContainer.innerHTML = mockupGallery;
-  lightbox.open(images);
   lightbox.refresh();
 }
